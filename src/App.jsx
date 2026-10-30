@@ -6,38 +6,46 @@ import AuthPage from './components/AuthPage';
 import CreatePost from './components/CreatePost';
 import PostCard from './components/PostCard';
 import ProfilePage from './components/ProfilePage';
+import PostDetail from './components/PostDetail';
 
 export default function App() {
     const [currentView, setCurrentView] = useState('home');
+    const [selectedPostId, setSelectedPostId] = useState(null);
     const [posts, setPosts] = useState([]);
     const [loadingPosts, setLoadingPosts] = useState(true);
 
-    // Fonction pour récupérer la liste mise à jour des posts
     const fetchPosts = async () => {
         try {
             const { data, error } = await supabase
                 .from('posts')
                 .select(`
           *,
-          profiles:user_id (username, avatar_url)
+          profiles:user_id (username, avatar_url),
+          comments (count),
+          likes (count)
         `)
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
             setPosts(data || []);
         } catch (err) {
-            console.error('Erreur lors du chargement des posts :', err.message);
+            console.error('Erreur chargement posts :', err.message);
         } finally {
             setLoadingPosts(false);
         }
     };
 
-    // Ce useEffect s'exécute au démarrage ET à chaque fois qu'on revient sur 'home'
     useEffect(() => {
         if (currentView === 'home') {
+            setSelectedPostId(null);
             fetchPosts();
         }
     }, [currentView]);
+
+    const handleOpenDetail = (postId) => {
+        setSelectedPostId(postId);
+        setCurrentView('detail');
+    };
 
     return (
         <AuthProvider>
@@ -48,7 +56,6 @@ export default function App() {
                 <main className="max-w-2xl mx-auto p-4 md:p-6">
                     {currentView === 'home' && (
                         <div>
-                            {/* En-tête d'accueil */}
                             <div className="text-center py-8 mb-6 border-b border-underground-border">
                                 <h1 className="text-xl md:text-3xl font-bold text-underground-highlight mb-2">
                                     CHRONICLES OF THE UNDERGROUND
@@ -58,7 +65,6 @@ export default function App() {
                                 </p>
                             </div>
 
-                            {/* Liste des posts */}
                             {loadingPosts ? (
                                 <div className="text-center py-12 text-gray-500 text-sm">
                                     [CONNEXION AU RÉSEAU EN COURS...]
@@ -76,11 +82,15 @@ export default function App() {
                             ) : (
                                 <div>
                                     {posts.map((post) => (
-                                        <PostCard key={post.id} post={post} />
+                                        <PostCard key={post.id} post={post} onOpenDetail={handleOpenDetail} />
                                     ))}
                                 </div>
                             )}
                         </div>
+                    )}
+
+                    {currentView === 'detail' && selectedPostId && (
+                        <PostDetail postId={selectedPostId} onBack={() => setCurrentView('home')} />
                     )}
 
                     {currentView === 'auth' && (
@@ -88,9 +98,7 @@ export default function App() {
                     )}
 
                     {currentView === 'create' && (
-                        <CreatePost onPostCreated={() => {
-                            setCurrentView('home'); // Le useEffect s'occupera de recharger la liste !
-                        }} />
+                        <CreatePost onPostCreated={() => setCurrentView('home')} />
                     )}
 
                     {currentView === 'profile' && (
