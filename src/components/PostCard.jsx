@@ -27,7 +27,7 @@ export default function PostCard({ post, onOpenDetail }) {
                 .select('post_id')
                 .eq('post_id', post.id)
                 .eq('user_id', user.id)
-                .single();
+                .maybeSingle();
 
             if (data) setHasLiked(true);
         } catch (err) {

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import { Terminal, Code, Palette, Camera, ExternalLink, Plus, Trash2, AlertCircle } from 'lucide-react';
+import PortfolioCard from './PortfolioCard';
 
 export default function Portfolio() {
     const { user } = useAuth();
@@ -18,10 +19,6 @@ export default function Portfolio() {
     const [imageFile, setImageFile] = useState(null);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
-
-    useEffect(() => {
-        fetchPortfolio();
-    }, []);
 
     const fetchPortfolio = async () => {
         setLoading(true);
@@ -40,6 +37,9 @@ export default function Portfolio() {
         }
     };
 
+    useEffect(() => {
+        fetchPortfolio();
+    }, []);
 
 
     const handleAddItem = async (e) => {
@@ -108,6 +108,17 @@ export default function Portfolio() {
         ? items
         : items.filter(item => item.category === filter);
 
+    // Supprimer un élément du portfolio
+    const handleDeleteItem = async (id) => {
+        if (!window.confirm("Supprimer cette réalisation du portfolio ?")) return;
+        try {
+            const { error } = await supabase.from('portfolio_items').delete().eq('id', id);
+            if (error) throw error;
+            setItems(items.filter(item => item.id !== id));
+        } catch (err) {
+            alert("Erreur: " + err.message);
+        }
+    };
     return (
         <div className="max-w-4xl mx-auto space-y-6 font-mono">
 
@@ -121,7 +132,8 @@ export default function Portfolio() {
                     <p className="text-xs text-gray-400">Développement web, spray art sur carton & photographie urbaine.</p>
                 </div>
 
-                {user && (
+                {/* Le bouton Ajouter n'apparaît que pour ton adresse email d'admin */}
+                {user && user.email === 'jlnko@hotmail.fr' && (
                     <button
                         onClick={() => setShowAddModal(!showAddModal)}
                         className="px-4 py-2 bg-underground-highlight text-black font-bold text-xs uppercase flex items-center space-x-2 hover:opacity-90"
@@ -130,6 +142,18 @@ export default function Portfolio() {
                         <span>Ajouter une œuvre / projet</span>
                     </button>
                 )}
+
+                {/* Grille des réalisations avec le composant PortfolioCard */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {filteredItems.map((item) => (
+                        <PortfolioCard
+                            key={item.id}
+                            item={item}
+                            onDelete={handleDeleteItem}
+                            isOwner={user && user.id === item.user_id}
+                        />
+                    ))}
+                </div>
             </div>
 
             {/* Formulaire d'ajout (Modal / Déroulant) */}
