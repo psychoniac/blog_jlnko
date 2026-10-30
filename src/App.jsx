@@ -5,13 +5,14 @@ import Navbar from './components/Navbar';
 import AuthPage from './components/AuthPage';
 import CreatePost from './components/CreatePost';
 import PostCard from './components/PostCard';
+import ProfilePage from './components/ProfilePage';
 
 export default function App() {
     const [currentView, setCurrentView] = useState('home');
     const [posts, setPosts] = useState([]);
     const [loadingPosts, setLoadingPosts] = useState(true);
 
-    // Fonction pour récupérer les posts
+    // Fonction pour récupérer la liste mise à jour des posts
     const fetchPosts = async () => {
         try {
             const { data, error } = await supabase
@@ -25,15 +26,18 @@ export default function App() {
             if (error) throw error;
             setPosts(data || []);
         } catch (err) {
-            console.error('Erreur chargement posts :', err.message);
+            console.error('Erreur lors du chargement des posts :', err.message);
         } finally {
             setLoadingPosts(false);
         }
     };
 
+    // Ce useEffect s'exécute au démarrage ET à chaque fois qu'on revient sur 'home'
     useEffect(() => {
-        fetchPosts();
-    }, []);
+        if (currentView === 'home') {
+            fetchPosts();
+        }
+    }, [currentView]);
 
     return (
         <AuthProvider>
@@ -85,17 +89,12 @@ export default function App() {
 
                     {currentView === 'create' && (
                         <CreatePost onPostCreated={() => {
-                            setLoadingPosts(true); // Ici c'est un callback d'événement utilisateur, donc pas d'avertissement !
-                            fetchPosts();
-                            setCurrentView('home');
+                            setCurrentView('home'); // Le useEffect s'occupera de recharger la liste !
                         }} />
                     )}
 
                     {currentView === 'profile' && (
-                        <div className="p-6 bg-underground-card border border-underground-border">
-                            <h2 className="text-lg font-bold mb-4 text-underground-highlight">// MON PROFIL</h2>
-                            <p className="text-sm text-gray-400">Section profil en cours de finition...</p>
-                        </div>
+                        <ProfilePage />
                     )}
                 </main>
 

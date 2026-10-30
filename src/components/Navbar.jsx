@@ -5,7 +5,8 @@ export default function Navbar({ setCurrentView }) {
     const { user, profile, signOut } = useAuth();
 
     return (
-        <header className="border-b-2 border-underground-border bg-underground-card sticky top-0 z-50 px-4 py-3">
+        <nav>
+
             <div className="max-w-4xl mx-auto flex items-center justify-between">
 
                 {/* Logo / Titre du site */}
@@ -57,6 +58,6 @@ export default function Navbar({ setCurrentView }) {
                 </div>
 
             </div>
-        </header>
+        </nav>
     );
 }
