@@ -7,6 +7,7 @@ import CreatePost from './components/CreatePost';
 import PostCard from './components/PostCard';
 import ProfilePage from './components/ProfilePage';
 import PostDetail from './components/PostDetail';
+import Portfolio from './components/Portfolio';
 
 export default function App() {
     const [currentView, setCurrentView] = useState('home');
@@ -103,6 +104,10 @@ export default function App() {
 
                     {currentView === 'profile' && (
                         <ProfilePage />
+                    )}
+
+                    {currentView === 'portfolio' && (
+                        <Portfolio />
                     )}
                 </main>
 

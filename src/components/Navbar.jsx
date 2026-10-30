@@ -1,12 +1,11 @@
-import { Terminal, PlusCircle, User, LogOut, LogIn } from 'lucide-react';
+import { Terminal, PlusCircle, User, LogOut, LogIn, Briefcase } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function Navbar({ setCurrentView }) {
     const { user, profile, signOut } = useAuth();
 
     return (
-        <nav>
-
+        <header className="border-b-2 border-underground-border bg-underground-card sticky top-0 z-50 px-4 py-3">
             <div className="max-w-4xl mx-auto flex items-center justify-between">
 
                 {/* Logo / Titre du site */}
@@ -20,6 +19,16 @@ export default function Navbar({ setCurrentView }) {
 
                 {/* Boutons de navigation */}
                 <div className="flex items-center space-x-3 font-mono text-xs md:text-sm">
+
+                    {/* Lien Portfolio permanent */}
+                    <button
+                        onClick={() => setCurrentView('portfolio')}
+                        className="flex items-center space-x-1.5 px-3 py-1.5 border border-underground-border text-underground-accent hover:border-underground-highlight transition-all"
+                    >
+                        <Briefcase className="w-4 h-4 text-underground-highlight" />
+                        <span className="hidden md:inline">Portfolio</span>
+                    </button>
+
                     {user ? (
                         <>
                             <button
@@ -52,12 +61,12 @@ export default function Navbar({ setCurrentView }) {
                             className="flex items-center space-x-1.5 px-4 py-1.5 bg-underground-accent text-black font-bold border border-underground-accent hover:bg-transparent hover:text-underground-accent transition-all"
                         >
                             <LogIn className="w-4 h-4" />
-                            <span>Connexion / Inscription</span>
+                            <span>Connexion</span>
                         </button>
                     )}
                 </div>
 
             </div>
-        </nav>
+        </header>
     );
 }
