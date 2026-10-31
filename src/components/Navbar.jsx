@@ -22,7 +22,7 @@ export default function Navbar({ setCurrentView }) {
                         className="flex items-center space-x-2 text-underground-highlight font-mono font-bold tracking-wider text-lg hover:opacity-80 transition-opacity"
                     >
                         <Terminal className="w-6 h-6" />
-                        <span>SUBWAY_CHRONICLES</span>
+                        <span>LES CHRONIQUES DE JLNKO</span>
                     </button>
 
                     {/* Boutons de navigation */}
@@ -36,7 +36,14 @@ export default function Navbar({ setCurrentView }) {
                             <Briefcase className="w-4 h-4 text-underground-highlight" />
                             <span className="hidden md:inline">Portfolio</span>
                         </button>
-
+                        {/* Lien À propos permanent */}
+                        <button
+                            onClick={() => setCurrentView('about')}
+                            className="flex items-center space-x-1.5 px-3 py-1.5 border border-underground-border text-underground-accent hover:border-underground-highlight transition-all"
+                        >
+                            <Terminal className="w-4 h-4 text-underground-highlight" />
+                            <span className="hidden md:inline">À propos</span>
+                        </button>
                         {user ? (
                             <>
                                 <button

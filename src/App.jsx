@@ -8,6 +8,7 @@ import PostCard from './components/PostCard';
 import ProfilePage from './components/ProfilePage';
 import PostDetail from './components/PostDetail';
 import Portfolio from './components/Portfolio';
+import AboutPage from './components/AboutPage';
 
 export default function App() {
     const [currentView, setCurrentView] = useState('home');
@@ -59,10 +60,10 @@ export default function App() {
                         <div>
                             <div className="text-center py-8 mb-6 border-b border-underground-border">
                                 <h1 className="text-xl md:text-3xl font-bold text-underground-highlight mb-2">
-                                    CHRONICLES OF THE UNDERGROUND
+                                    Les chroniques de Jlnko
                                 </h1>
                                 <p className="text-gray-400 text-xs md:text-sm max-w-lg mx-auto">
-                                    Récits de rue, reconstruction et résilience. Un espace brut pour partager l'envers du décor.
+                                    Récits de rue, reconstruction et résilience. Un espace brut pour partager l'envers du décor de l'addiction, la précarité, l'exclusion sociale.
                                 </p>
                             </div>
 
@@ -108,6 +109,10 @@ export default function App() {
 
                     {currentView === 'portfolio' && (
                         <Portfolio />
+                    )}
+
+                    {currentView === 'about' && (
+                        <AboutPage setCurrentView={setCurrentView} />
                     )}
                 </main>
 
